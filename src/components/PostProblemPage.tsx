@@ -183,7 +183,8 @@ export const PostProblemPage: React.FC<PostProblemPageProps> = ({
         }),
       });
 
-      if (res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
         if (data.refinedTitle) setTitle(data.refinedTitle);
         if (data.painPoint) setPainPoint(data.painPoint);
@@ -199,7 +200,7 @@ export const PostProblemPage: React.FC<PostProblemPageProps> = ({
         setAiSuccessNote('AI Assistant refined title, impact analysis, tags, and deliverable milestones!');
         setTimeout(() => setAiSuccessNote(null), 5000);
       } else {
-        throw new Error('AI formulation API returned error');
+        throw new Error('AI formulation API returned error or static route');
       }
     } catch (err) {
       console.warn('AI formulate problem fallback:', err);

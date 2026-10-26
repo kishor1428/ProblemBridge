@@ -134,48 +134,43 @@ export default function App() {
     }, 4000);
   };
 
-  // Synchronize with backend database on initial mount
+  // Synchronize with backend database on initial mount with static host safety
   useEffect(() => {
+    const safeFetchJson = async (url: string) => {
+      try {
+        const res = await fetch(url);
+        const contentType = res.headers.get('content-type') || '';
+        if (res.ok && contentType.includes('application/json')) {
+          return await res.json();
+        }
+        return null;
+      } catch {
+        return null;
+      }
+    };
+
     const fetchDatabase = async () => {
       try {
-        const [probsRes, propsRes, profileRes, threadsRes, notifsRes, connRes] = await Promise.all([
-          fetch('/api/problems').catch(() => null),
-          fetch('/api/proposals').catch(() => null),
-          fetch('/api/user-profile').catch(() => null),
-          fetch('/api/threads').catch(() => null),
-          fetch('/api/notifications').catch(() => null),
-          fetch('/api/connection-requests').catch(() => null),
+        const [probsData, propsData, profileData, threadsData, notifsData, connData] = await Promise.all([
+          safeFetchJson('/api/problems'),
+          safeFetchJson('/api/proposals'),
+          safeFetchJson('/api/user-profile'),
+          safeFetchJson('/api/threads'),
+          safeFetchJson('/api/notifications'),
+          safeFetchJson('/api/connection-requests'),
         ]);
 
-        if (probsRes && probsRes.ok) {
-          const data = await probsRes.json();
-          if (Array.isArray(data) && data.length > 0) setProblems(data);
+        if (Array.isArray(probsData) && probsData.length > 0) setProblems(probsData);
+        if (Array.isArray(propsData)) setProposals(propsData);
+        if (profileData && profileData.fullName) {
+          setUserProfile(profileData);
+          if (profileData.role) setUserRole(profileData.role);
         }
-        if (propsRes && propsRes.ok) {
-          const data = await propsRes.json();
-          if (Array.isArray(data)) setProposals(data);
-        }
-        if (profileRes && profileRes.ok) {
-          const data = await profileRes.json();
-          if (data && data.fullName) {
-            setUserProfile(data);
-            if (data.role) setUserRole(data.role);
-          }
-        }
-        if (threadsRes && threadsRes.ok) {
-          const data = await threadsRes.json();
-          if (Array.isArray(data) && data.length > 0) setChatThreads(data);
-        }
-        if (notifsRes && notifsRes.ok) {
-          const data = await notifsRes.json();
-          if (Array.isArray(data) && data.length > 0) setNotifications(data);
-        }
-        if (connRes && connRes.ok) {
-          const data = await connRes.json();
-          if (Array.isArray(data) && data.length > 0) setConnectionRequests(data);
-        }
+        if (Array.isArray(threadsData) && threadsData.length > 0) setChatThreads(threadsData);
+        if (Array.isArray(notifsData) && notifsData.length > 0) setNotifications(notifsData);
+        if (Array.isArray(connData) && connData.length > 0) setConnectionRequests(connData);
       } catch (err) {
-        console.warn('Backend database fetch error, using local state:', err);
+        console.warn('Backend database fetch notice, using local state:', err);
       }
     };
 
