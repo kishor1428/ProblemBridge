@@ -1,0 +1,6 @@
+{
+  "name": "ProblemBridge - Real-World Industry Problem Platform",
+  "description": "Connect real-world MSME and industrial challenges with student engineers and innovators for verifiable POCs, milestone bounties, and field mentorship.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

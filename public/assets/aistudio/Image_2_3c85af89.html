@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProblemBridge — Turning Problems into Possibilities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg: #FAFAF9;
+  --color-surface: #FFFFFF;
+  --color-ink: #14162B;
+  --color-ink-soft: #4A4C63;
+  --color-ink-faint: #8B8DA3;
+  --color-primary: #5B4FE9;
+  --color-primary-light: #8B7FF5;
+  --color-primary-soft: #EFEDFC;
+  --color-accent: #1FAE7C;
+  --color-accent-soft: #E4F6EE;
+  --color-danger: #D6455A;
+  --color-danger-soft: #FBE9EC;
+  --color-warning: #C9861A;
+  --color-warning-soft: #FBF1DF;
+  --color-border: #E8E7F3;
+  --color-border-strong: #D6D4EA;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.125rem;
+  --step-2: 1.375rem;
+  --step-3: 1.75rem;
+  --step-4: 2.25rem;
+  --step-5: 3.15rem;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --shadow-card: 0 1px 3px rgba(20,22,43,0.04), 0 8px 24px -12px rgba(20,22,43,0.08);
+  --shadow-pop: 0 16px 48px -8px rgba(20,22,43,0.18);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* FULL-WIDTH CONTAINER — eliminates wide empty gutters */
+.container-full {
+  width: 100%;
+  max-width: 100%;
+  padding-left: clamp(1.25rem, 3.5vw, 3rem);
+  padding-right: clamp(1.25rem, 3.5vw, 3rem);
+}
+
+/* TYPOGRAPHY */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  line-height: 1.15;
+  margin: 0 0 var(--space-3);
+}
+h1 { font-size: clamp(2.2rem, 3.8vw, var(--step-5)); font-weight: 500; letter-spacing: -0.015em; }
+h2 { font-size: clamp(1.6rem, 2.5vw, var(--step-4)); font-weight: 500; }
+h3 { font-size: var(--step-2); font-weight: 600; }
+
+p { margin: 0 0 var(--space-4); color: var(--color-ink-soft); }
+a { color: var(--color-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* HEADER */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+  height: 72px;
+}
+
+.site-header .header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  gap: var(--space-4);
+}
+
+/* LEFT: Hamburger + Brand logo pushed to the far left corner */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  transition: background 0.15s ease;
+}
+.hamburger:hover { background: var(--color-primary-soft); }
+.hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--color-ink);
+  border-radius: 2px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  text-decoration: none !important;
+}
+.brand-mark { width: 32px; height: 32px; }
+
+/* CENTER: Big Prominent Search Bar */
+.header-search {
+  flex: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #F4F4F7;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-input-wrap:focus-within {
+  background: #FFFFFF;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(91, 79, 233, 0.14), 0 4px 16px rgba(20,22,43,0.06);
+}
+
+.search-icon {
+  font-size: 1.05rem;
+  color: var(--color-ink-faint);
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrap input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-ink);
+  min-width: 0;
+}
+.search-input-wrap input::placeholder {
+  color: var(--color-ink-faint);
+}
+
+.search-clear {
+  background: #E5E4EE;
+  border: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
+
+/* RIGHT: Notifications, Messages, and Profile Avatar pushed to far right corner */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-soft);
+  transition: background 0.15s ease, color 0.15s ease;
+  font-size: 1.15rem;
+}
+.icon-btn:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #FFFFFF;
+}
+
+.avatar-chip {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+.avatar-chip:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(91, 79, 233, 0.18);
+}
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: var(--step-0);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none !important;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(91, 79, 233, 0.28);
+}
+.btn-primary:hover {
+  background: #4C40DC;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(91, 79, 233, 0.35);
+}
+.btn-outline {
+  background: #fff;
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-ink);
+}
+.btn-outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+/* HERO SECTION — Wide, balanced layout */
+.hero {
+  padding: clamp(3rem, 6vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4.5rem);
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: var(--step--1);
+  color: var(--color-primary);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+.hero .lede {
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-6);
+  max-width: 54ch;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* HERO CARD / STEPPER */
+.hero-visual-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  box-shadow: var(--shadow-card);
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+.flow-step:not(:last-child) {
+  border-bottom: 1px dashed var(--color-border);
+}
+.flow-step .n {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--color-primary-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+.flow-step strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--color-ink);
+  margin-bottom: 2px;
+}
+.flow-step .desc {
+  font-size: var(--step--1);
+  color: var(--color-ink-faint);
+}
+
+/* SECTION 2: HOW IT WORKS BANNER */
+.section-band {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-7) 0;
+}
+.section-header {
+  margin-bottom: var(--space-6);
+}
+
+.bridge-flow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.bridge-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  text-align: center;
+  flex-shrink: 0;
+}
+.bridge-node .dot {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-soft);
+  font-size: 1.35rem;
+  box-shadow: 0 4px 12px rgba(91,79,233,0.12);
+}
+.bridge-line {
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--color-border-strong) 0 6px, transparent 6px 12px);
+  position: relative;
+  min-width: 32px;
+}
+.bridge-line .mid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+/* FEATURED PROBLEMS GRID */
+.section-problems {
+  padding: var(--space-8) 0;
+}
+.problem-grid-wide {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+  margin-top: var(--space-6);
+}
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-pop);
+  border-color: var(--color-primary-light);
+}
+
+.tag {
+  display: inline-flex;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+.tag-muted {
+  background: #F1F1F5;
+  color: var(--color-ink-soft);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1080px) {
+  .problem-grid-wide { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .problem-grid-wide { grid-template-columns: 1fr; }
+  .header-search { max-width: 380px; }
+}
+@media (max-width: 680px) {
+  .header-search { display: none; }
+  .brand span.text { display: none; }
+}
+</style>
+</head>
+<body>
+
+  <!-- ===================== RESTRUCTURED HEADER ===================== -->
+  <header class="site-header">
+    <div class="container-full header-bar">
+      
+      <!-- 1. LEFT CORNER: Hamburger Menu + ProblemBridge Brand & Icon -->
+      <div class="header-left">
+        <button class="hamburger" aria-label="Toggle navigation drawer" title="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <a href="#/" class="brand">
+          <svg class="brand-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7" cy="16" r="5" fill="#5B4FE9"/>
+            <circle cx="25" cy="16" r="5" fill="#1FAE7C"/>
+            <rect x="11" y="14.5" width="10" height="3" rx="1.5" fill="#8B7FF5"/>
+          </svg>
+          <span class="text">ProblemBridge</span>
+        </a>
+      </div>
+
+      <!-- 2. CENTER: Big Expanded Search Bar -->
+      <div class="header-search">
+        <div class="search-input-wrap">
+          <span class="search-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <input type="search" placeholder="Search real problems, domains, categories, or skills (e.g. IoT, React, Agritech)..." aria-label="Search problems">
+          <button type="button" class="search-clear" aria-label="Clear">✕</button>
+        </div>
+      </div>
+
+      <!-- 3. RIGHT CORNER: Notification, Message, and Profile Avatar -->
+      <div class="header-right">
+        <!-- Notification Icon with Badge -->
+        <button class="icon-btn" aria-label="Notifications" title="1 new notification">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="badge">1</span>
+        </button>
+
+        <!-- Messages Icon -->
+        <button class="icon-btn" aria-label="Messages" title="Messages">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </button>
+
+        <!-- User Profile Avatar with Initials -->
+        <div class="avatar-chip" title="Sanjay Verma (PSG College of Tech)">
+          SV
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ===================== MAIN FULL-WIDTH BODY ===================== -->
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="container-full">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Real problems. Real builders.</div>
+            <h1>Real Problems.<br>Real Builders.<br>Real Solutions.</h1>
+            <p class="lede">ProblemBridge connects real-world problem owners with students, developers, engineers and innovators who can build meaningful solutions.</p>
+            <div class="hero-actions">
+              <a href="#/problems" class="btn btn-primary">Explore Problems</a>
+              <a href="#/register" class="btn btn-outline">Post a Problem</a>
+            </div>
+          </div>
+
+          <div class="hero-visual-card">
+            <div class="flow-step">
+              <div class="n">01</div>
+              <div>
+                <strong>Problem</strong>
+                <div class="desc">An organization posts a real challenge</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="n">02</div>
+              <div>
+                <strong>Builder</strong>
+                <div class="desc">A builder discovers it and applies</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="n">03</div>
+              <div>
+                <strong>Collaboration</strong>
+                <div class="desc">Owner and builder connect and plan</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="n">04</div>
+              <div>
+                <strong>Solution</strong>
+                <div class="desc">A working solution gets built and delivered</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS STEPPING -->
+    <section class="section-band">
+      <div class="container-full">
+        <div class="section-header">
+          <div class="eyebrow">How It Works</div>
+          <h2>From a real problem to a working solution</h2>
+        </div>
+        <div class="bridge-flow">
+          <div class="bridge-node"><div class="dot">📝</div><span>Post a Problem</span></div>
+          <div class="bridge-line"><div class="mid"></div></div>
+          <div class="bridge-node"><div class="dot">🔍</div><span>Discover Problems</span></div>
+          <div class="bridge-line"><div class="mid"></div></div>
+          <div class="bridge-node"><div class="dot">🤝</div><span>Connect &amp; Collaborate</span></div>
+          <div class="bridge-line"><div class="mid"></div></div>
+          <div class="bridge-node"><div class="dot">🛠️</div><span>Build the Solution</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED PROBLEMS -->
+    <section class="section-problems">
+      <div class="container-full">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+          <div>
+            <div class="eyebrow">Featured Problems</div>
+            <h2 style="margin-bottom:0">Problems looking for builders right now</h2>
+          </div>
+          <a href="#/problems" class="btn btn-outline" style="padding:0.55rem 1.1rem; font-size:0.875rem;">View all (180+)</a>
+        </div>
+
+        <div class="problem-grid-wide">
+          <!-- Card 1 -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+              <span class="tag">IoT</span>
+              <span style="font-size:0.8125rem; color:var(--color-ink-faint);">2d ago</span>
+            </div>
+            <h3 style="font-size:1.15rem; margin-bottom:0.5rem;">Automated Water Tank Monitoring</h3>
+            <div style="font-size:0.8125rem; color:var(--color-primary); font-weight:600; margin-bottom:0.4rem;">IoT & Embedded Systems</div>
+            <div style="font-size:0.8125rem; color:var(--color-ink-faint); margin-bottom:0.8rem;">📍 Erode, Tamil Nadu</div>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem;">
+              <span class="tag tag-muted">ESP32</span>
+              <span class="tag tag-muted">Arduino</span>
+              <span class="tag tag-muted">Sensors</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--color-border); padding-top:0.75rem; font-size:0.875rem;">
+              <strong style="color:var(--color-ink);">₹15,000</strong>
+              <span style="color:var(--color-ink-faint);">12 interested</span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+              <span class="tag">Healthcare Tech</span>
+              <span style="font-size:0.8125rem; color:var(--color-ink-faint);">4d ago</span>
+            </div>
+            <h3 style="font-size:1.15rem; margin-bottom:0.5rem;">Patient Queue & Token Display</h3>
+            <div style="font-size:0.8125rem; color:var(--color-primary); font-weight:600; margin-bottom:0.4rem;">Healthcare</div>
+            <div style="font-size:0.8125rem; color:var(--color-ink-faint); margin-bottom:0.8rem;">📍 Coimbatore, Tamil Nadu</div>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem;">
+              <span class="tag tag-muted">React</span>
+              <span class="tag tag-muted">Node.js</span>
+              <span class="tag tag-muted">PostgreSQL</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--color-border); padding-top:0.75rem; font-size:0.875rem;">
+              <strong style="color:var(--color-ink);">₹35,000</strong>
+              <span style="color:var(--color-ink-faint);">8 interested</span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+              <span class="tag">Agritech</span>
+              <span style="font-size:0.8125rem; color:var(--color-ink-faint);">1w ago</span>
+            </div>
+            <h3 style="font-size:1.15rem; margin-bottom:0.5rem;">Soil Moisture Irrigation Advisory</h3>
+            <div style="font-size:0.8125rem; color:var(--color-primary); font-weight:600; margin-bottom:0.4rem;">Agriculture & Agritech</div>
+            <div style="font-size:0.8125rem; color:var(--color-ink-faint); margin-bottom:0.8rem;">📍 Salem, Tamil Nadu</div>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem;">
+              <span class="tag tag-muted">Python</span>
+              <span class="tag tag-muted">Sensors</span>
+              <span class="tag tag-muted">React Native</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--color-border); padding-top:0.75rem; font-size:0.875rem;">
+              <strong style="color:var(--color-ink);">₹28,000</strong>
+              <span style="color:var(--color-ink-faint);">19 interested</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

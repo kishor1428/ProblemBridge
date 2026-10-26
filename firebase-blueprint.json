@@ -1,0 +1,285 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with skills, role, and verification details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 120 },
+        "role": { "type": "string", "enum": ["builder", "owner", "admin"] },
+        "accountType": { "type": "string", "maxLength": 100 },
+        "institution": { "type": "string", "maxLength": 150 },
+        "department": { "type": "string", "maxLength": 100 },
+        "degree": { "type": "string", "maxLength": 100 },
+        "rollNo": { "type": "string", "maxLength": 50 },
+        "city": { "type": "string", "maxLength": 80 },
+        "state": { "type": "string", "maxLength": 80 },
+        "bio": { "type": "string", "maxLength": 500 },
+        "skills": { "type": "array" },
+        "githubUrl": { "type": "string", "maxLength": 200 },
+        "linkedinUrl": { "type": "string", "maxLength": 200 },
+        "avatarUrl": { "type": "string", "maxLength": 300 },
+        "registrationDate": { "type": "string", "maxLength": 50 },
+        "registrationStatus": { "type": "string", "enum": ["Verified", "Pending Verification"] },
+        "canPostProblems": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "fullName", "email", "role"]
+    },
+    "UserPrivate": {
+      "title": "UserPrivate",
+      "description": "Private sensitive data for a user",
+      "type": "object",
+      "properties": {
+        "phone": { "type": "string", "maxLength": 25 },
+        "idVerificationType": { "type": "string", "maxLength": 100 },
+        "idCardVerified": { "type": "boolean" },
+        "notificationSettings": { "type": "object" }
+      }
+    },
+    "Problem": {
+      "title": "Problem",
+      "description": "Real-world challenge posted by an organization",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 80 },
+        "domain": { "type": "string", "maxLength": 80 },
+        "location": { "type": "string", "maxLength": 100 },
+        "organization": { "type": "string", "maxLength": 150 },
+        "organizationType": { "type": "string", "maxLength": 80 },
+        "postedTime": { "type": "string", "maxLength": 50 },
+        "budget": { "type": "number" },
+        "interestedCount": { "type": "number" },
+        "skills": { "type": "array" },
+        "description": { "type": "string", "maxLength": 3000 },
+        "painPoint": { "type": "string", "maxLength": 1000 },
+        "deliverableType": { "type": "string", "maxLength": 80 },
+        "deliverables": { "type": "array" },
+        "hardwareProvided": { "type": "string", "maxLength": 300 },
+        "timeline": { "type": "string", "maxLength": 100 },
+        "urgency": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["Open", "Under Review", "In Progress", "Completed", "Closed"] },
+        "mentorName": { "type": "string", "maxLength": 100 },
+        "mentorTitle": { "type": "string", "maxLength": 100 },
+        "ownerEmail": { "type": "string", "maxLength": 120 },
+        "ownerId": { "type": "string", "maxLength": 128 },
+        "ownerName": { "type": "string", "maxLength": 100 },
+        "ownerOrg": { "type": "string", "maxLength": 150 },
+        "ownerCity": { "type": "string", "maxLength": 80 },
+        "ownerState": { "type": "string", "maxLength": 80 },
+        "ownerVerificationStatus": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "category", "organization", "description", "ownerId", "status"]
+    },
+    "Proposal": {
+      "title": "Proposal",
+      "description": "Solution proposal submitted by a solver",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "problemId": { "type": "string", "maxLength": 128 },
+        "problemTitle": { "type": "string", "maxLength": 200 },
+        "ownerId": { "type": "string", "maxLength": 128 },
+        "solverId": { "type": "string", "maxLength": 128 },
+        "builderName": { "type": "string", "maxLength": 100 },
+        "builderRole": { "type": "string", "maxLength": 100 },
+        "builderInstitution": { "type": "string", "maxLength": 150 },
+        "solutionSummary": { "type": "string", "maxLength": 3000 },
+        "techStack": { "type": "array" },
+        "estimatedWeeks": { "type": "number" },
+        "teamType": { "type": "string", "maxLength": 50 },
+        "portfolioUrl": { "type": "string", "maxLength": 250 },
+        "submittedAt": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["Submitted", "Under Review", "Shortlisted", "Accepted", "Rejected", "Withdrawn"] }
+      },
+      "required": ["id", "problemId", "solverId", "solutionSummary", "status"]
+    },
+    "ConnectionRequest": {
+      "title": "ConnectionRequest",
+      "description": "Connection or candidate outreach request",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "problemId": { "type": "string", "maxLength": 128 },
+        "problemTitle": { "type": "string", "maxLength": 200 },
+        "senderId": { "type": "string", "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "senderEmail": { "type": "string", "maxLength": 120 },
+        "senderRole": { "type": "string", "enum": ["builder", "owner"] },
+        "senderInstitution": { "type": "string", "maxLength": 150 },
+        "senderDegree": { "type": "string", "maxLength": 100 },
+        "senderDepartment": { "type": "string", "maxLength": 100 },
+        "senderSkills": { "type": "array" },
+        "senderBio": { "type": "string", "maxLength": 500 },
+        "senderGithub": { "type": "string", "maxLength": 200 },
+        "senderLinkedin": { "type": "string", "maxLength": 200 },
+        "senderPhone": { "type": "string", "maxLength": 25 },
+        "ownerId": { "type": "string", "maxLength": 128 },
+        "ownerName": { "type": "string", "maxLength": 100 },
+        "ownerEmail": { "type": "string", "maxLength": 120 },
+        "intentType": { "type": "string", "enum": ["interested", "have_solution", "general_query"] },
+        "message": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["pending", "approved", "declined"] },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "respondedAt": { "type": "string", "maxLength": 50 },
+        "chatThreadId": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["id", "problemId", "senderId", "ownerId", "message", "status"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "Collaborative project workspace created from accepted proposals",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "problemId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "ownerId": { "type": "string", "maxLength": 128 },
+        "acceptedProposalId": { "type": "string", "maxLength": 128 },
+        "solverIds": { "type": "array" },
+        "status": { "type": "string", "enum": ["planning", "in_progress", "review", "completed"] },
+        "milestones": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "problemId", "title", "ownerId", "solverIds", "status"]
+    },
+    "ProjectTask": {
+      "title": "ProjectTask",
+      "description": "Work task inside a collaboration workspace",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "projectId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "assigneeId": { "type": "string", "maxLength": 128 },
+        "assigneeName": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["todo", "in_progress", "done"] },
+        "priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "dueDate": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "projectId", "title", "status"]
+    },
+    "ProjectFile": {
+      "title": "ProjectFile",
+      "description": "Shared file / document inside a collaboration workspace",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "projectId": { "type": "string", "maxLength": 128 },
+        "fileName": { "type": "string", "maxLength": 150 },
+        "fileUrl": { "type": "string", "maxLength": 500 },
+        "fileSize": { "type": "string", "maxLength": 50 },
+        "uploadedBy": { "type": "string", "maxLength": 128 },
+        "uploaderName": { "type": "string", "maxLength": 100 },
+        "uploadedAt": { "type": "string" }
+      },
+      "required": ["id", "projectId", "fileName", "fileUrl", "uploadedBy"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Direct or project messaging thread",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "participantIds": { "type": "array" },
+        "type": { "type": "string", "enum": ["direct", "project"] },
+        "problemId": { "type": "string", "maxLength": 128 },
+        "problemTitle": { "type": "string", "maxLength": 200 },
+        "counterpartName": { "type": "string", "maxLength": 100 },
+        "counterpartRole": { "type": "string", "maxLength": 100 },
+        "counterpartOrg": { "type": "string", "maxLength": 150 },
+        "lastMessage": { "type": "string", "maxLength": 1000 },
+        "lastMessageTime": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "participantIds", "type"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Individual chat message",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "conversationId": { "type": "string", "maxLength": 128 },
+        "senderId": { "type": "string", "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "sender": { "type": "string", "enum": ["user", "owner"] },
+        "text": { "type": "string", "maxLength": 2000 },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "conversationId", "senderId", "text"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "System or user activity notification",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "recipientId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "message": { "type": "string", "maxLength": 500 },
+        "time": { "type": "string", "maxLength": 50 },
+        "read": { "type": "boolean" },
+        "type": { "type": "string", "enum": ["proposal", "message", "system", "update", "connection_request"] },
+        "connectionRequestId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "recipientId", "title", "message", "type", "read"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Public user profiles"
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": "UserPrivate",
+      "description": "Private sensitive user settings"
+    },
+    "/problems/{problemId}": {
+      "schema": "Problem",
+      "description": "Problems and real-world challenges"
+    },
+    "/proposals/{proposalId}": {
+      "schema": "Proposal",
+      "description": "Proposals submitted to problems"
+    },
+    "/connection_requests/{requestId}": {
+      "schema": "ConnectionRequest",
+      "description": "Connection requests between solvers and problem owners"
+    },
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Accepted collaboration workspace projects"
+    },
+    "/projects/{projectId}/tasks/{taskId}": {
+      "schema": "ProjectTask",
+      "description": "Project task deliverables"
+    },
+    "/projects/{projectId}/files/{fileId}": {
+      "schema": "ProjectFile",
+      "description": "Project shared files"
+    },
+    "/conversations/{conversationId}": {
+      "schema": "Conversation",
+      "description": "Messaging conversation threads"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages in conversation threads"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "Notifications for users"
+    }
+  }
+}

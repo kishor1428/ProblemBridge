@@ -1,0 +1,264 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ================= GLOBAL HELPERS =================
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'enbarajenba21@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // ================= ENTITY VALIDATION HELPERS =================
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'fullName', 'email', 'role']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.fullName is string && data.fullName.size() <= 100 &&
+        data.email is string && data.email.size() <= 120 &&
+        data.role in ['builder', 'owner', 'admin'];
+    }
+
+    function isValidProblem(data) {
+      return data.keys().hasAll(['id', 'title', 'category', 'organization', 'description', 'ownerId', 'status']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.title is string && data.title.size() <= 200 &&
+        data.category is string && data.category.size() <= 80 &&
+        data.organization is string && data.organization.size() <= 150 &&
+        data.description is string && data.description.size() <= 5000 &&
+        data.ownerId is string && data.ownerId.size() <= 128 &&
+        data.status in ['Open', 'Under Review', 'In Progress', 'Completed', 'Closed'];
+    }
+
+    function isValidProposal(data) {
+      return data.keys().hasAll(['id', 'problemId', 'solverId', 'solutionSummary', 'status']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.problemId is string && data.problemId.size() <= 128 &&
+        data.solverId is string && data.solverId.size() <= 128 &&
+        data.solutionSummary is string && data.solutionSummary.size() <= 5000 &&
+        data.status in ['Submitted', 'Under Review', 'Shortlisted', 'Accepted', 'Rejected', 'Withdrawn'];
+    }
+
+    function isValidConnectionRequest(data) {
+      return data.keys().hasAll(['id', 'problemId', 'senderId', 'ownerId', 'message', 'status']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.problemId is string && data.problemId.size() <= 128 &&
+        data.senderId is string && data.senderId.size() <= 128 &&
+        data.ownerId is string && data.ownerId.size() <= 128 &&
+        data.message is string && data.message.size() <= 3000 &&
+        data.status in ['pending', 'approved', 'declined'];
+    }
+
+    function isValidProject(data) {
+      return data.keys().hasAll(['id', 'problemId', 'title', 'ownerId', 'solverIds', 'status']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.problemId is string && data.problemId.size() <= 128 &&
+        data.title is string && data.title.size() <= 200 &&
+        data.ownerId is string && data.ownerId.size() <= 128 &&
+        data.solverIds is list && data.solverIds.size() <= 50 &&
+        data.status in ['planning', 'in_progress', 'review', 'completed'];
+    }
+
+    function isValidTask(data) {
+      return data.keys().hasAll(['id', 'projectId', 'title', 'status']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.projectId is string && data.projectId.size() <= 128 &&
+        data.title is string && data.title.size() <= 150 &&
+        data.status in ['todo', 'in_progress', 'done'];
+    }
+
+    function isValidFile(data) {
+      return data.keys().hasAll(['id', 'projectId', 'fileName', 'fileUrl', 'uploadedBy']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.projectId is string && data.projectId.size() <= 128 &&
+        data.fileName is string && data.fileName.size() <= 150 &&
+        data.fileUrl is string && data.fileUrl.size() <= 500 &&
+        data.uploadedBy is string && data.uploadedBy.size() <= 128;
+    }
+
+    function isValidConversation(data) {
+      return data.keys().hasAll(['id', 'participantIds', 'type']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.participantIds is list && data.participantIds.size() <= 20 &&
+        data.type in ['direct', 'project'];
+    }
+
+    function isValidMessage(data) {
+      return data.keys().hasAll(['id', 'conversationId', 'senderId', 'text']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.conversationId is string && data.conversationId.size() <= 128 &&
+        data.senderId is string && data.senderId.size() <= 128 &&
+        data.text is string && data.text.size() <= 3000;
+    }
+
+    function isValidNotification(data) {
+      return data.keys().hasAll(['id', 'recipientId', 'title', 'message', 'type', 'read']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.recipientId is string && data.recipientId.size() <= 128 &&
+        data.title is string && data.title.size() <= 150 &&
+        data.message is string && data.message.size() <= 1000 &&
+        data.read is bool;
+    }
+
+    // ================= RULES =================
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      allow create: if isOwner(userId) && isValidUser(incoming()) && incoming().role in ['builder', 'owner'] && incoming().id == userId;
+      allow update: if isSignedIn() && (isOwner(userId) || isAdmin()) && isValidUser(incoming()) &&
+        incoming().id == existing().id && incoming().email == existing().email;
+      allow delete: if isAdmin();
+
+      match /private/{docId} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // Problems Collection (Public Catalog)
+    match /problems/{problemId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && isValidProblem(incoming()) && incoming().ownerId == request.auth.uid && isValidId(problemId);
+      allow update: if isSignedIn() && isValidProblem(incoming()) && (
+        (existing().ownerId == request.auth.uid && incoming().ownerId == existing().ownerId && incoming().id == existing().id) ||
+        isAdmin() ||
+        incoming().diff(existing()).affectedKeys().hasOnly(['interestedCount'])
+      );
+      allow delete: if isSignedIn() && (existing().ownerId == request.auth.uid || isAdmin());
+    }
+
+    // Proposals Collection
+    match /proposals/{proposalId} {
+      allow get: if isSignedIn() && (resource.data.solverId == request.auth.uid || resource.data.ownerId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.solverId == request.auth.uid || resource.data.ownerId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidProposal(incoming()) && incoming().solverId == request.auth.uid && isValidId(proposalId);
+      allow update: if isSignedIn() && isValidProposal(incoming()) && (
+        (existing().solverId == request.auth.uid && incoming().solverId == existing().solverId && incoming().diff(existing()).affectedKeys().hasOnly(['solutionSummary', 'techStack', 'estimatedWeeks', 'portfolioUrl', 'status'])) ||
+        (existing().ownerId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['status'])) ||
+        isAdmin()
+      );
+      allow delete: if isSignedIn() && (existing().solverId == request.auth.uid || isAdmin());
+    }
+
+    // Connection Requests Collection
+    match /connection_requests/{requestId} {
+      allow get, list: if isSignedIn() && (resource.data.senderId == request.auth.uid || resource.data.ownerId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidConnectionRequest(incoming()) && incoming().senderId == request.auth.uid && isValidId(requestId);
+      allow update: if isSignedIn() && isValidConnectionRequest(incoming()) && (
+        (existing().ownerId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'respondedAt', 'chatThreadId'])) ||
+        isAdmin()
+      );
+      allow delete: if isSignedIn() && (existing().senderId == request.auth.uid || existing().ownerId == request.auth.uid || isAdmin());
+    }
+
+    // Collaboration Projects
+    match /projects/{projectId} {
+      allow get: if isSignedIn() && (resource.data.ownerId == request.auth.uid || resource.data.solverIds.hasAny([request.auth.uid]) || isAdmin());
+      allow list: if isSignedIn() && (resource.data.ownerId == request.auth.uid || resource.data.solverIds.hasAny([request.auth.uid]) || isAdmin());
+      allow create: if isSignedIn() && isValidProject(incoming()) && (incoming().ownerId == request.auth.uid || isAdmin()) && isValidId(projectId);
+      allow update: if isSignedIn() && isValidProject(incoming()) && (
+        (existing().ownerId == request.auth.uid && incoming().ownerId == existing().ownerId) ||
+        (existing().solverIds.hasAny([request.auth.uid]) && incoming().diff(existing()).affectedKeys().hasOnly(['milestones', 'status', 'updatedAt'])) ||
+        isAdmin()
+      );
+      allow delete: if isSignedIn() && (existing().ownerId == request.auth.uid || isAdmin());
+
+      match /tasks/{taskId} {
+        allow get, list: if isSignedIn() && (
+          get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid ||
+          get(/databases/$(database)/documents/projects/$(projectId)).data.solverIds.hasAny([request.auth.uid]) ||
+          isAdmin()
+        );
+        allow create: if isSignedIn() && isValidTask(incoming()) && incoming().projectId == projectId && (
+          get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid ||
+          get(/databases/$(database)/documents/projects/$(projectId)).data.solverIds.hasAny([request.auth.uid]) ||
+          isAdmin()
+        );
+        allow update: if isSignedIn() && isValidTask(incoming()) && incoming().projectId == projectId && (
+          get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid ||
+          get(/databases/$(database)/documents/projects/$(projectId)).data.solverIds.hasAny([request.auth.uid]) ||
+          isAdmin()
+        );
+        allow delete: if isSignedIn() && (
+          get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid ||
+          isAdmin()
+        );
+      }
+
+      match /files/{fileId} {
+        allow get, list: if isSignedIn() && (
+          get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid ||
+          get(/databases/$(database)/documents/projects/$(projectId)).data.solverIds.hasAny([request.auth.uid]) ||
+          isAdmin()
+        );
+        allow create: if isSignedIn() && isValidFile(incoming()) && incoming().projectId == projectId && incoming().uploadedBy == request.auth.uid;
+        allow delete: if isSignedIn() && (
+          existing().uploadedBy == request.auth.uid ||
+          get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid ||
+          isAdmin()
+        );
+      }
+    }
+
+    // Conversations & Messages
+    match /conversations/{conversationId} {
+      allow get, list: if isSignedIn() && (resource.data.participantIds.hasAny([request.auth.uid]) || isAdmin());
+      allow create: if isSignedIn() && isValidConversation(incoming()) && incoming().participantIds.hasAny([request.auth.uid]) && isValidId(conversationId);
+      allow update: if isSignedIn() && isValidConversation(incoming()) && (
+        (existing().participantIds.hasAny([request.auth.uid]) && incoming().diff(existing()).affectedKeys().hasOnly(['lastMessage', 'lastMessageTime', 'updatedAt'])) ||
+        isAdmin()
+      );
+
+      match /messages/{messageId} {
+        allow get, list: if isSignedIn() && (
+          get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantIds.hasAny([request.auth.uid]) ||
+          isAdmin()
+        );
+        allow create: if isSignedIn() && isValidMessage(incoming()) && incoming().conversationId == conversationId && incoming().senderId == request.auth.uid;
+        allow update: if false; // Messages are immutable
+        allow delete: if isSignedIn() && (existing().senderId == request.auth.uid || isAdmin());
+      }
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      allow get, list: if isSignedIn() && resource.data.recipientId == request.auth.uid;
+      allow create: if isSignedIn() && isValidNotification(incoming()) && isValidId(notificationId);
+      allow update: if isSignedIn() && existing().recipientId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['read']);
+      allow delete: if isSignedIn() && existing().recipientId == request.auth.uid;
+    }
+
+    // Admins Collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+  }
+}

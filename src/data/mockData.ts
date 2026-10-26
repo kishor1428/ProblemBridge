@@ -1,0 +1,578 @@
+import { Problem, Proposal, NotificationItem, ChatThread, UserProfile, ConnectionRequest } from '../types';
+
+export const INITIAL_USER_PROFILE: UserProfile = {
+  id: 'usr-sv-2026',
+  fullName: 'Sanjay Verma',
+  email: 'enbarajenba21@gmail.com',
+  phone: '+91 98421 54321',
+  role: 'builder',
+  accountType: 'Student Builder / Innovator',
+  institution: 'PSG College of Technology',
+  department: 'Electronics & Communication Engineering',
+  degree: 'B.E. 4th Year (Class of 2027)',
+  rollNo: '21L248',
+  city: 'Coimbatore',
+  state: 'Tamil Nadu',
+  bio: 'Hardware maker, IoT tinkerer, and embedded firmware builder with a passion for industrial automation and agriculture telemetry.',
+  skills: ['ESP32', 'Arduino', 'Sensors', 'React', 'Node.js', 'Python', 'MQTT'],
+  githubUrl: 'https://github.com/sanjay-verma-tech',
+  linkedinUrl: 'https://linkedin.com/in/sanjay-verma-psg',
+  registrationDate: '14 Oct 2026',
+  registrationStatus: 'Verified',
+  idVerificationType: 'College ID Card',
+  idCardVerified: true,
+  canPostProblems: true,
+  isLoggedIn: true,
+};
+
+export const INITIAL_PROBLEMS: Problem[] = [
+  {
+    id: 'pb-01',
+    title: 'Automated Water Tank Monitoring',
+    category: 'IoT',
+    domain: 'IoT & Embedded Systems',
+    location: 'Erode, Tamil Nadu',
+    organization: 'Erode Textile Dyeing & Processing Cluster',
+    organizationType: 'MSME & Industry',
+    postedTime: '2d ago',
+    budget: 15000,
+    interestedCount: 12,
+    skills: ['ESP32', 'Arduino', 'Sensors'],
+    description:
+      'We run three 10,000-liter overhead industrial water storage tanks feeding continuous dying machinery. Operators currently climb rusted ladders twice every shift with dipsticks to check water levels. When tanks run dry mid-batch, expensive dyeing runs get contaminated and electric pump motors burn out running dry.',
+    painPoint:
+      'Manual dipstick readings are hazardous, inaccurate, and late. Frequent pump dry-runs cause motor burning and costly textile production line stoppage.',
+    deliverableType: 'Hardware Prototype',
+    deliverables: [
+      'ESP32 microcontroller circuit with ultrasonic level sensor (JSN-SR04T waterproof)',
+      'Automated relay cut-off switch triggered when water falls below 15% or overflows 95%',
+      'Local LED bar indicator panel + 4G/WiFi telemetry ping every 5 minutes',
+      'Circuit diagram, bill of materials (under ₹2,800 per tank), and Arduino source code'
+    ],
+    hardwareProvided: 'Access to test tank on-site, 24V DC power rails, and reimbursement for test sensors.',
+    timeline: '3 - 4 weeks',
+    urgency: 'High (Immediate)',
+    status: 'Open',
+    mentorName: 'Sanjay Verma (Lead)',
+    mentorTitle: 'PSG IoT Innovation Lab / Plant Manager',
+    ownerId: 'usr-sk-2026',
+    ownerName: 'Er. Sivakumar M.',
+    ownerRole: 'Problem Owner / Lead Plant Engineer',
+    ownerTitle: 'Plant Operations & Engineering Lead',
+    ownerOrg: 'Erode Textile Dyeing & Processing Cluster',
+    ownerDepartment: 'Dyeing House & Industrial Effluent Management',
+    ownerEmail: 'commissioner@erode.gov.in',
+    ownerPhone: '+91 94432 10987',
+    ownerCity: 'Erode',
+    ownerState: 'Tamil Nadu',
+    ownerBio: 'Senior industrial engineer managing 12 continuous dyeing machines and wastewater treatment operations. Focused on IoT telemetry, motor preservation, and energy conservation.',
+    ownerVerificationStatus: 'Verified Official',
+    ownerResponseTime: 'Usually responds in ~30 mins',
+    ownerActiveProjects: 2
+  },
+  {
+    id: 'pb-02',
+    title: 'Patient Queue & Token Display',
+    category: 'Healthcare Tech',
+    domain: 'Healthcare',
+    location: 'Coimbatore, Tamil Nadu',
+    organization: 'G.K. Multi-Speciality Outpatient Polyclinic',
+    organizationType: 'Hospital & Healthcare',
+    postedTime: '4d ago',
+    budget: 35000,
+    interestedCount: 8,
+    skills: ['React', 'Node.js', 'PostgreSQL'],
+    description:
+      'Our outpatient department handles over 400 rural patients daily across 6 specialist consulting rooms. Crowding at reception causes chaotic waiting halls and patients missing their appointments. We need a lightweight, responsive token queue management web application accessible from tablet browsers and smart TVs.',
+    painPoint:
+      'Patients stand in disorganised queues for hours, doctors experience unpredictable arrival flows, and reception staff spend 70% of their time shouting token numbers manually.',
+    deliverableType: 'Web & Mobile App',
+    deliverables: [
+      'Reception counter module for fast token generation & doctor assignment (thermal printer integration)',
+      'Doctor consulting room dashboard to call next patient, mark delayed, or transfer patient',
+      'Big-screen waiting room TV display view showing current running token numbers with bilingual voice announcement (Tamil & English)',
+      'WhatsApp/SMS token status link for patient live progress tracking'
+    ],
+    timeline: '4 - 6 weeks',
+    urgency: 'High (Immediate)',
+    status: 'Open',
+    mentorName: 'Dr. K. Radhakrishnan',
+    mentorTitle: 'Medical Director & Chief of Clinical Operations',
+    ownerId: 'usr-kr-2026',
+    ownerName: 'Dr. K. Radhakrishnan',
+    ownerRole: 'Problem Owner / Medical Director',
+    ownerTitle: 'Chief of Clinical Operations',
+    ownerOrg: 'G.K. Multi-Speciality Outpatient Polyclinic',
+    ownerDepartment: 'Outpatient Care & Healthcare Informatics',
+    ownerEmail: 'operations@gkpolyclinic.in',
+    ownerPhone: '+91 98430 77123',
+    ownerCity: 'Coimbatore',
+    ownerState: 'Tamil Nadu',
+    ownerBio: 'Physician and hospital administrator modernizing outpatient workflows, OPD token dispatch, and doctor appointment systems.',
+    ownerVerificationStatus: 'Institution Verified',
+    ownerResponseTime: 'Usually responds in ~2 hours',
+    ownerActiveProjects: 1
+  },
+  {
+    id: 'pb-03',
+    title: 'Soil Moisture Irrigation Advisory',
+    category: 'Agritech',
+    domain: 'Agriculture & Agritech',
+    location: 'Salem, Tamil Nadu',
+    organization: 'Thoppur Tapioca & Turmeric Farmers Collective',
+    organizationType: 'Farmer Producer Org',
+    postedTime: '1w ago',
+    budget: 28000,
+    interestedCount: 19,
+    skills: ['Python', 'Sensors', 'React Native'],
+    description:
+      'Over 85 member farmers cultivate moisture-sensitive tapioca and turmeric on red loamy soil. Electricity supply to irrigation pumps is irregular (often provided during night hours). Over-irrigation causes tuber rot while under-irrigation stunts yields by 30%. We need a field sensor unit and bilingual mobile advisory tool.',
+    painPoint:
+      'Farmers irrigate blindly whenever electricity switches on, depleting borewell aquifers and causing root fungal rot. Lack of localized soil moisture guidance wastes water and reduces crop yield.',
+    deliverableType: 'Firmware & Cloud',
+    deliverables: [
+      'Capacitive soil moisture & temperature probe interfacing with low-power solar microcontroller',
+      'Python agronomic recommendation engine factoring soil moisture thresholds and local 3-day weather forecast',
+      'Simple React Native mobile app with regional Tamil voice/audio prompts and color-coded irrigation recommendations ("Irrigate 45 mins", "Do not irrigate today")',
+      'Low-power sleep state firmware ensuring 6-month battery operation'
+    ],
+    hardwareProvided: '5 farmer test plots available with drip irrigation access and solar cell frames.',
+    timeline: '4 weeks',
+    urgency: 'Moderate (Next 30 Days)',
+    status: 'Open',
+    mentorName: 'M. Palanisamy',
+    mentorTitle: 'Chief Coordinator, Farmers Producer Org',
+    ownerId: 'usr-mp-2026',
+    ownerName: 'M. Palanisamy',
+    ownerRole: 'Chief Coordinator & Agronomist',
+    ownerTitle: 'Chief Coordinator, Farmers Producer Org',
+    ownerOrg: 'Thoppur Tapioca & Turmeric Farmers Collective',
+    ownerDepartment: 'Field Advisory & Water Resource Cell',
+    ownerEmail: 'thoppur.fpo@agrifarm.org',
+    ownerPhone: '+91 94421 88450',
+    ownerCity: 'Salem',
+    ownerState: 'Tamil Nadu',
+    ownerBio: 'Farmer cooperative leader organizing 85+ turmeric and tapioca growers. Promoting solar-powered precision irrigation sensors to combat aquifer depletion.',
+    ownerVerificationStatus: 'Industry Partner',
+    ownerResponseTime: 'Usually responds within 24 hours',
+    ownerActiveProjects: 1
+  },
+  {
+    id: 'pb-04',
+    title: 'Cold Storage Temperature Logger & SMS Alert',
+    category: 'IoT',
+    domain: 'Industrial Automation & Cold Chain',
+    location: 'Madurai, Tamil Nadu',
+    organization: 'Vaigai Dairy Producers Cooperative',
+    organizationType: 'MSME & Industry',
+    postedTime: '3d ago',
+    budget: 42000,
+    interestedCount: 15,
+    skills: ['Raspberry Pi', 'MQTT', 'Python', 'Sensors'],
+    description:
+      'Our bulk milk chilling centers hold 15,000 liters of fresh milk before refrigerated transport tankers arrive. If compressor power trips or refrigerant leaks overnight, milk spoils within 3 hours. We require real-time temperature loggers with cellular SMS alerts to the duty manager whenever temperature exceeds 4°C.',
+    painPoint:
+      'Unnoticed chiller tripping results in spoiled milk batches costing over ₹3,00,000 per incident and disputes with cooperative dairy farmers.',
+    deliverableType: 'Hardware Prototype',
+    deliverables: [
+      'Industrial PT100 temperature probe node with GSM SIM800 module for backup SMS alerts',
+      'Local dashboard showing 48-hour cooling curve and power supply telemetry',
+      'Cloud MQTT bridge for multi-center aggregate supervision',
+      'Fail-safe audible siren buzzer trigger at Chilling Center site'
+    ],
+    timeline: '3 - 5 weeks',
+    urgency: 'High (Immediate)',
+    status: 'Open',
+    mentorName: 'C. Murugesan',
+    mentorTitle: 'Operations Superintendent',
+    ownerId: 'usr-cm-2026',
+    ownerName: 'C. Murugesan',
+    ownerRole: 'Operations Superintendent',
+    ownerTitle: 'Operations Superintendent',
+    ownerOrg: 'Vaigai Dairy Producers Cooperative',
+    ownerDepartment: 'Bulk Chilling & Cold Chain Logistics',
+    ownerEmail: 'superintendent@vaigaidairy.coop',
+    ownerPhone: '+91 94862 33190',
+    ownerCity: 'Madurai',
+    ownerState: 'Tamil Nadu',
+    ownerBio: 'Dairy plant superintendent managing 3 bulk milk chilling units holding 45,000 liters. Implements automated thermal alerting and telemetry.',
+    ownerVerificationStatus: 'Verified Official',
+    ownerResponseTime: 'Usually responds in ~1 hour',
+    ownerActiveProjects: 2
+  },
+  {
+    id: 'pb-05',
+    title: 'Textile Loom Yarn Breakage Optical Detector',
+    category: 'MSME Tech',
+    domain: 'Computer Vision & MSME',
+    location: 'Tiruppur, Tamil Nadu',
+    organization: 'Sri Vigneshwar Cotton Weaving Mills',
+    organizationType: 'MSME & Industry',
+    postedTime: '5d ago',
+    budget: 50000,
+    interestedCount: 22,
+    skills: ['OpenCV', 'Python', 'Edge AI', 'Raspberry Pi'],
+    description:
+      'During automated shuttleless powerloom weaving, a single snapped yarn thread that goes unnoticed for 2 minutes ruins meters of fabric cloth with visible horizontal streak defects. We want an edge camera module positioned above the warp sheet to detect thread breaks in real time and trigger instant loom stoppage.',
+    painPoint:
+      'Manual visual inspection across 24 running looms is impossible for 2 operators. Fabric defect scrap rates are at 4.2%, causing significant profit erosion.',
+    deliverableType: 'Edge AI Model',
+    deliverables: [
+      'High-speed camera setup and lightweight optical flow / edge detection script running on Raspberry Pi 5',
+      'Relay trigger to loom emergency stop brake within 300ms of yarn snap',
+      'Fault log with timestamp and image snapshot for machine tuning',
+      'Rugged dust-proof enclosure design recommendation for high-lint textile mill environments'
+    ],
+    timeline: '6 weeks',
+    urgency: 'Moderate (Next 30 Days)',
+    status: 'Open',
+    mentorName: 'K. Balasubramaniam',
+    mentorTitle: 'Managing Partner',
+    ownerId: 'usr-kb-2026',
+    ownerName: 'K. Balasubramaniam',
+    ownerRole: 'Managing Partner',
+    ownerTitle: 'Managing Partner',
+    ownerOrg: 'Sri Vigneshwar Cotton Weaving Mills',
+    ownerDepartment: 'Textile Weaving & Quality Assurance',
+    ownerEmail: 'balu@vigneshwarmills.com',
+    ownerPhone: '+91 98422 65431',
+    ownerCity: 'Tiruppur',
+    ownerState: 'Tamil Nadu',
+    ownerBio: 'Textile entrepreneur operating 48 modern high-speed looms. Seeking computer vision edge AI systems to eliminate yarn streak defects and fabric scrap.',
+    ownerVerificationStatus: 'Industry Partner',
+    ownerResponseTime: 'Usually responds in ~2 hours',
+    ownerActiveProjects: 1
+  },
+  {
+    id: 'pb-06',
+    title: 'Municipal Solid Waste Route Optimizer',
+    category: 'Smart City',
+    domain: 'Smart Cities & Civic Tech',
+    location: 'Tiruchirappalli, Tamil Nadu',
+    organization: 'Trichy City Sanitation & Resource Recovery Cell',
+    organizationType: 'Municipality / Urban Local Body',
+    postedTime: '1w ago',
+    budget: 32000,
+    interestedCount: 11,
+    skills: ['React', 'Python', 'OpenStreetMap', 'Node.js'],
+    description:
+      'Our sanitation department operates 38 compactor trucks and 110 battery-operated vehicles across 65 wards. Routes are currently planned on static driver memory, leading to fuel wastage, missed commercial garbage bins, and traffic jams in temple bazaar lanes during peak hours.',
+    painPoint:
+      'Suboptimal collection routes burn 22% excess diesel fuel daily and create citizen complaints about missed community bins.',
+    deliverableType: 'Web & Mobile App',
+    deliverables: [
+      'Interactive GIS map planner showing bins with capacity flags and road one-way constraints',
+      'Vehicle routing heuristic engine optimizing truck paths based on real-time bin priority',
+      'Driver mobile turn-by-turn waypoint interface in regional language',
+      'Daily fuel savings and ward clearance efficiency dashboard'
+    ],
+    timeline: '5 weeks',
+    urgency: 'Flexible',
+    status: 'Open',
+    mentorName: 'S. Anandaraj',
+    mentorTitle: 'Executive Sanitary Officer',
+    ownerId: 'usr-rm-2026',
+    ownerName: 'Er. R. Meenakshisundaram',
+    ownerRole: 'Executive Engineer (Sanitation)',
+    ownerTitle: 'Executive Engineer, Municipal Works',
+    ownerOrg: 'Trichy City Sanitation & Resource Recovery Cell',
+    ownerDepartment: 'Solid Waste Management & Smart City Mission',
+    ownerEmail: 'ee.sanitation@trichycorp.gov.in',
+    ownerPhone: '+91 94433 90812',
+    ownerCity: 'Tiruchirappalli',
+    ownerState: 'Tamil Nadu',
+    ownerBio: 'Urban local body engineer overseeing civic waste logistics, GPS vehicle route planning, and municipal transfer stations.',
+    ownerVerificationStatus: 'Verified Official',
+    ownerResponseTime: 'Usually responds in ~3 hours',
+    ownerActiveProjects: 1
+  },
+  {
+    id: 'pb-07',
+    title: 'Offline-First Primary Health Center Vaccine Tracker',
+    category: 'Healthcare Tech',
+    domain: 'Healthcare & Public Health',
+    location: 'Dharmapuri, Tamil Nadu',
+    organization: 'Tribal Area Primary Health Mission',
+    organizationType: 'Hospital & Healthcare',
+    postedTime: '6d ago',
+    budget: 45000,
+    interestedCount: 14,
+    skills: ['React', 'IndexedDB', 'Tailwind', 'Node.js'],
+    description:
+      'Village Health Nurses (VHNs) in hilly tribal hamlets have zero cellular reception while conducting immunization camps. When they return to the block headquarters, manual paper registers have to be typed into national portals, causing 2-week recording backlogs and missed second-dose infant tracking.',
+    painPoint:
+      'Paper immunization records get damaged in field transit and offline field data entry is lost, jeopardizing infant vaccination schedules.',
+    deliverableType: 'Full-Stack Solution',
+    deliverables: [
+      'Progressive Web App with 100% offline functionality using IndexedDB caching',
+      'Zero-conflict automatic sync when tablet reconnects to cellular/WiFi network',
+      'Child immunization reminder schedule calculation with Tamil audio guidance for mothers',
+      'Exportable CSV and Government portal compliant JSON format'
+    ],
+    timeline: '4 - 6 weeks',
+    urgency: 'High (Immediate)',
+    status: 'Open',
+    mentorName: 'Dr. Meenakshi S.',
+    mentorTitle: 'Block Medical Officer'
+  },
+  {
+    id: 'pb-08',
+    title: 'Solar Rooftop Net-Metering Inverter Gateway',
+    category: 'Clean Energy',
+    domain: 'Clean Energy & Power Systems',
+    location: 'Chennai, Tamil Nadu',
+    organization: 'Ambattur Industrial Estate Solar Cooperative',
+    organizationType: 'MSME & Industry',
+    postedTime: '2w ago',
+    budget: 38000,
+    interestedCount: 16,
+    skills: ['Modbus', 'ESP32', 'Node.js', 'React'],
+    description:
+      '30 small manufacturing workshops have installed 20kW–50kW rooftop solar plants with different inverter brands (Delta, SMA, Sungrow). Each proprietary app is locked, preventing aggregated power export tracking and TANGEDCO net-metering settlement audits. We need a unified RS485 Modbus logger.',
+    painPoint:
+      'MSME owners cannot verify whether electricity exported to the grid matches utility credit statements, losing thousands of rupees in unverified billing.',
+    deliverableType: 'Hardware Prototype',
+    deliverables: [
+      'Universal RS485 to ESP32 gateway querying standard SunSpec Modbus registers',
+      'Unified cloud dashboard displaying real-time power generation, factory self-consumption, and grid export',
+      'Discrepancy audit tool comparing inverter energy meters against EB billing meters',
+      'Open-source hardware schematics using low-cost isolated RS485 transceiver'
+    ],
+    timeline: '5 weeks',
+    urgency: 'Moderate (Next 30 Days)',
+    status: 'Open',
+    mentorName: 'V. Rajesh Kumar',
+    mentorTitle: 'Energy Auditor & Consultant'
+  }
+];
+
+export const INITIAL_NOTIFICATIONS: NotificationItem[] = [
+  {
+    id: 'notif-req-03',
+    title: 'Permission Request: Priya Dharshini R.',
+    message: 'Priya Dharshini R. (CIT) requested permission to connect on "Soil Moisture & Smart Drip Advisory for Turmeric Farmers". Intent: "I Have a Solution". Analyze candidate profile to approve or reject.',
+    time: '15 mins ago',
+    read: false,
+    type: 'connection_request',
+    connectionRequestId: 'req-03'
+  },
+  {
+    id: 'notif-1',
+    title: 'Application Shortlisted! 🎉',
+    message: 'Er. Sivakumar M. from Erode Textile Dyeing reviewed your proposal for Automated Water Tank Monitoring and requested a discovery call.',
+    time: '2 hours ago',
+    read: false,
+    type: 'proposal'
+  },
+  {
+    id: 'notif-2',
+    title: 'New Problem in Healthcare Tech',
+    message: 'Patient Queue & Token Display opened for proposals in Coimbatore, Tamil Nadu. Matches your React & Node.js skills.',
+    time: '1 day ago',
+    read: false,
+    type: 'update'
+  },
+  {
+    id: 'notif-3',
+    title: 'Welcome to ProblemBridge',
+    message: 'Your builder profile (Sanjay Verma · PSG College of Technology) has been verified for MSME and civic challenges.',
+    time: '3 days ago',
+    read: true,
+    type: 'system'
+  }
+];
+
+export const INITIAL_PROPOSALS: Proposal[] = [
+  {
+    id: 'prop-101',
+    problemId: 'pb-01',
+    problemTitle: 'Automated Water Tank Monitoring',
+    builderName: 'Sanjay Verma',
+    builderRole: 'Final Year ECE & Embedded Systems Builder',
+    builderInstitution: 'PSG College of Technology, Coimbatore',
+    solutionSummary:
+      'We will build a weatherproof dual-sensor probe using JSN-SR04T ultrasonic module paired with a backup float switch for hardware failsafe. Telemetry sent via ESP32 over WiFi/4G to an MQTT broker, with an integrated optocoupler relay controlling pump contactors directly.',
+    techStack: ['ESP32', 'Arduino IDE', 'JSN-SR04T', 'MQTT', 'Solid State Relay'],
+    estimatedWeeks: 3,
+    teamType: 'Team of 2',
+    portfolioUrl: 'https://github.com/sanjay-verma-tech/embedded-iot-prototypes',
+    submittedAt: 'Yesterday at 4:30 PM',
+    status: 'Shortlisted'
+  }
+];
+
+export const INITIAL_THREADS: ChatThread[] = [
+  {
+    id: 'th-1',
+    problemId: 'pb-01',
+    problemTitle: 'Automated Water Tank Monitoring',
+    counterpartName: 'Er. Sivakumar M.',
+    counterpartRole: 'Plant Engineering Manager',
+    counterpartOrg: 'Erode Textile Dyeing Cluster',
+    counterpartAvatar: 'SK',
+    unreadCount: 1,
+    messages: [
+      {
+        id: 'm-1',
+        sender: 'owner',
+        text: 'Hello Sanjay! We reviewed your proposal for the tank water monitoring system. The backup float switch idea is very practical for our dye house.',
+        timestamp: '11:15 AM'
+      },
+      {
+        id: 'm-2',
+        sender: 'user',
+        text: 'Thank you Sir! We have already tested the JSN-SR04T waterproof sensor in humid environments. It handles steam and textile lint well.',
+        timestamp: '11:22 AM'
+      },
+      {
+        id: 'm-3',
+        sender: 'owner',
+        text: 'Excellent. Can you and your team visit the plant next Tuesday to measure the tank flange dimensions and inspect the 24V DC control cabinet?',
+        timestamp: '11:30 AM'
+      }
+    ]
+  },
+  {
+    id: 'th-2',
+    problemId: 'pb-02',
+    problemTitle: 'Patient Queue & Token Display',
+    counterpartName: 'Dr. K. Radhakrishnan',
+    counterpartRole: 'Chief of Clinical Operations',
+    counterpartOrg: 'G.K. Multi-Speciality Polyclinic',
+    counterpartAvatar: 'KR',
+    unreadCount: 0,
+    messages: [
+      {
+        id: 'm-4',
+        sender: 'owner',
+        text: 'Good day! Is the token queue system able to run on our existing Android smart TVs without requiring extra mini-PCs?',
+        timestamp: '2 days ago'
+      },
+      {
+        id: 'm-5',
+        sender: 'user',
+        text: 'Yes Doctor, the waiting room display is built with React as a lightweight web app that opens directly in Android TV Chrome/Silk browser in kiosk mode.',
+        timestamp: '2 days ago'
+      }
+    ]
+  }
+];
+
+export const INITIAL_CONNECTION_REQUESTS: ConnectionRequest[] = [
+  {
+    id: 'req-01',
+    problemId: 'pb-01',
+    problemTitle: 'Automated Water Tank Monitoring',
+    senderId: 'usr-sv-2026',
+    senderName: 'Sanjay Verma',
+    senderEmail: 'enbarajenba21@gmail.com',
+    senderRole: 'builder',
+    senderInstitution: 'PSG College of Technology',
+    senderDegree: 'B.E. 4th Year',
+    ownerId: 'usr-sk-2026',
+    ownerName: 'Er. Sivakumar M.',
+    ownerEmail: 'commissioner@erode.gov.in',
+    intentType: 'have_solution',
+    message: 'Hello Er. Sivakumar Sir, I have built a working prototype with JSN-SR04T waterproof ultrasonic sensor and automated relay cut-off. I would love to connect and share test videos.',
+    status: 'approved',
+    createdAt: 'Yesterday at 10:45 AM',
+    respondedAt: 'Yesterday at 11:10 AM',
+    chatThreadId: 'th-1'
+  },
+  {
+    id: 'req-02',
+    problemId: 'pb-02',
+    problemTitle: 'Patient Queue & Token Display',
+    senderId: 'usr-sv-2026',
+    senderName: 'Sanjay Verma',
+    senderEmail: 'enbarajenba21@gmail.com',
+    senderRole: 'builder',
+    senderInstitution: 'PSG College of Technology',
+    senderDegree: 'B.E. 4th Year',
+    ownerId: 'usr-kr-2026',
+    ownerName: 'Dr. K. Radhakrishnan',
+    ownerEmail: 'operations@gkpolyclinic.in',
+    intentType: 'interested',
+    message: 'Respected Dr. Radhakrishnan, I am interested in building the bilingual token display web app. Requesting your permission to connect and discuss hospital display specs.',
+    status: 'approved',
+    createdAt: '2 days ago',
+    respondedAt: '2 days ago',
+    chatThreadId: 'th-2'
+  },
+  {
+    id: 'req-03',
+    problemId: 'pb-03',
+    problemTitle: 'Soil Moisture & Smart Drip Advisory for Turmeric Farmers',
+    senderId: 'usr-priya-2026',
+    senderName: 'Priya Dharshini R.',
+    senderEmail: 'priya.embedded@cit.edu.in',
+    senderRole: 'builder',
+    senderInstitution: 'Coimbatore Institute of Technology (CIT)',
+    senderDegree: 'B.Tech IT, 4th Year',
+    senderDepartment: 'Information Technology & Sensor Systems Lab',
+    senderSkills: ['Python', 'Sensors', 'ESP32', 'React Native', 'Low-power Firmware'],
+    senderBio: 'Student researcher focused on low-power soil moisture sensors and rural IoT. Finalist at National Smart Agriculture Hackathon with field prototype testing.',
+    senderGithub: 'https://github.com/priya-dharshini-iot',
+    senderLinkedin: 'https://linkedin.com/in/priya-dharshini-cit',
+    senderPhone: '+91 94883 22104',
+    ownerId: 'usr-mp-2026',
+    ownerName: 'M. Palanisamy',
+    ownerEmail: 'thoppur.fpo@agrifarm.org',
+    intentType: 'have_solution',
+    message: 'Vanakkam Palanisamy Sir, I have designed and tested a solar-powered soil moisture telemetry node with bilingual voice advisory for turmeric farmers. Requesting your permission to connect and share test videos.',
+    status: 'pending',
+    createdAt: '15 mins ago',
+  }
+];
+
+export const INITIAL_USERS: UserProfile[] = [
+  INITIAL_USER_PROFILE,
+  {
+    id: 'usr-sk-2026',
+    fullName: 'Er. Sivakumar M.',
+    email: 'commissioner@erode.gov.in',
+    phone: '+91 94432 10987',
+    role: 'owner',
+    accountType: 'Problem Owner / Organization',
+    institution: 'Erode Textile Dyeing & Processing Cluster',
+    department: 'Plant Operations & Engineering Lead',
+    degree: 'B.Tech / Plant Lead',
+    rollNo: 'EMP-0842',
+    city: 'Erode',
+    state: 'Tamil Nadu',
+    bio: 'Facility engineer managing MSME dyeing units, effluent treatment, and automated monitoring. Championing IoT adoption across the Perundurai textile belt.',
+    skills: ['Project Management', 'SCADA', 'Industrial Automation', 'Effluent Quality Monitoring'],
+    githubUrl: 'https://github.com/erode-cluster',
+    linkedinUrl: 'https://linkedin.com/in/sivakumar-erode',
+    registrationDate: '10 Oct 2026',
+    registrationStatus: 'Verified',
+    idVerificationType: 'Official Institutional Email',
+    idCardVerified: true,
+    canPostProblems: true,
+    isLoggedIn: false
+  },
+  {
+    id: 'usr-kr-2026',
+    fullName: 'Dr. K. Radhakrishnan',
+    email: 'operations@gkpolyclinic.in',
+    phone: '+91 98430 77123',
+    role: 'owner',
+    accountType: 'Problem Owner / Organization',
+    institution: 'G.K. Multi-Speciality Outpatient Polyclinic',
+    department: 'Chief of Clinical Operations',
+    degree: 'M.D. / Healthcare Administration',
+    rollNo: 'MED-1102',
+    city: 'Coimbatore',
+    state: 'Tamil Nadu',
+    bio: 'Medical Director passionate about rural outpatient efficiency, reducing queue times, and patient-centered hospital tech.',
+    skills: ['Hospital Ops', 'Healthcare IT', 'OPD Optimization'],
+    githubUrl: '',
+    linkedinUrl: 'https://linkedin.com/in/dr-radhakrishnan',
+    registrationDate: '08 Oct 2026',
+    registrationStatus: 'Verified',
+    idVerificationType: 'Official Institutional Email',
+    idCardVerified: true,
+    canPostProblems: true,
+    isLoggedIn: false
+  }
+];
